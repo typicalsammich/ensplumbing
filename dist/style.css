@@ -65,3 +65,14 @@
 @media(max-width:900px){#main-nav{max-height:calc(100dvh - 105px);overflow-y:auto}}
 @media(max-width:350px){.hero h1{font-size:57px}.contact-grid h1{font-size:59px}.contact-number{font-size:38px}.page-hero h1{font-size:53px}.family-header>span{font-size:10px}}
 .cinematic-stage{position:absolute;inset:0;opacity:0;transition:opacity .5s;overflow:hidden}.cinematic-stage canvas{display:block;width:100%;height:100%}.rendered-ready .cinematic-stage{opacity:1}.cinematic-cut{position:absolute;inset:0;background:#07121b;pointer-events:none;opacity:0}.rendered-ready #cinematic-poster{opacity:0}#cinematic-poster{transition:opacity .4s}
+
+/* Photo-led services and a compact mobile masthead. */
+.service-card-photo{height:170px;margin:-35px -35px 25px;overflow:hidden}.service-card-photo img{width:100%;height:100%;object-fit:cover;transition:transform .4s}.service-card:hover .service-card-photo img{transform:scale(1.04)}
+.resource-photo{height:220px;margin:-40px -40px 28px;overflow:hidden}.resource-photo img{width:100%;height:100%;object-fit:cover}.resource-number{background:var(--cream);padding:3px 8px}.resource-card>.eyebrow{position:relative}
+@media(max-width:900px){.service-card-photo{margin:-25px -25px 22px}.resource-photo{margin:-30px -30px 25px}}
+@media(max-width:600px){
+ html{scroll-padding-top:100px}.topline{padding:3px 12px;min-height:26px}.family-header{gap:6px}.family-header>img{width:20px;height:20px}.family-header>span{font-size:9px;line-height:1.3;white-space:nowrap}.family-header .header-experience{display:inline;font-size:9px;margin:0}.family-header b{display:inline;margin:0 5px}
+ .nav-wrap{padding:6px 20px;gap:10px;min-height:68px}.brand{gap:11px}.brand img{width:54px;height:56px}.brand span{font-size:30px}.brand strong{font-size:8px;margin-top:5px;letter-spacing:.12em}.menu-toggle{min-width:54px;min-height:44px;padding:8px 0 8px 8px;font-size:11px}
+ .hero-content{padding-top:33px;padding-bottom:110px}.hero h1{font-size:clamp(54px,15.8vw,65px)}.hero .eyebrow{margin-bottom:22px}.hero{min-height:690px}.service-card-photo{height:140px;margin:-22px -18px 21px}.service-card{min-height:350px}.resource-photo{height:205px}.estimate-form{scroll-margin-top:105px}#main-nav{max-height:calc(100dvh - 94px)}
+}
+@media(max-width:350px){.nav-wrap{padding-left:16px;padding-right:16px}.brand img{width:49px;height:53px}.brand span{font-size:27px}.brand strong{font-size:7px}.family-header>span,.family-header .header-experience{font-size:8px}.family-header b{margin:0 3px}.service-card-photo{height:115px}}
