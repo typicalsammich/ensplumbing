@@ -7,20 +7,19 @@ const mobile=$('.mobile-cta'),hero=$('#hero')||$('.page-hero')||$('.contact-sect
 if(hero&&'IntersectionObserver' in window)new IntersectionObserver(entries=>{for(const e of entries)mobile?.classList.toggle('visible',!e.isIntersecting&&e.boundingClientRect.bottom<0)},{threshold:0}).observe(hero);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 if(document.body.dataset.page==='home'){
- const video=$('#cinematic-video'),controls=$('.intro-controls'),replay=$('#replay-intro'),content=$('.hero-content'),sound=$('#intro-sound');
- let playing=false,loadTimer,hardTimer;replay.hidden=false;
- const done=()=>{clearTimeout(loadTimer);clearTimeout(hardTimer);playing=false;video.pause();video.classList.remove('active');document.body.classList.remove('intro-playing','intro-reveal');content.inert=false;controls.hidden=true;replay.hidden=false;try{sessionStorage.setItem('es-intro-v2','1')}catch{}if(controls.contains(document.activeElement))replay.focus({preventScroll:true})};
- const start=async()=>{if(playing)return;playing=true;replay.hidden=true;video.muted=true;sound.textContent='Sound Off';sound.setAttribute('aria-pressed','false');video.src=matchMedia('(max-width:600px)').matches?'/assets/cinematic-mobile.mp4':'/assets/cinematic-desktop.mp4';loadTimer=setTimeout(done,2000);hardTimer=setTimeout(done,13000);try{await video.play()}catch{done()}};
- video.addEventListener('playing',()=>{if(!playing)return;clearTimeout(loadTimer);video.classList.add('active');document.body.classList.add('intro-playing');content.inert=true;controls.hidden=false});
- video.addEventListener('timeupdate',()=>{if(playing&&video.currentTime>video.duration*.57){document.body.classList.add('intro-reveal');content.inert=false}});
- video.addEventListener('ended',done);video.addEventListener('error',done);
- $('#skip-intro').addEventListener('click',done);replay.addEventListener('click',start);
- sound.addEventListener('click',()=>{video.muted=!video.muted;sound.textContent=video.muted?'Sound Off':'Sound On';sound.setAttribute('aria-pressed',String(!video.muted))});
- document.addEventListener('visibilitychange',()=>{if(!playing)return;if(document.hidden)video.pause();else video.play().catch(done)});
- if('IntersectionObserver'in window)new IntersectionObserver(es=>{if(playing&&!es[0].isIntersecting)done()},{threshold:0}).observe($('#hero'));
- reduced.addEventListener('change',()=>{if(reduced.matches&&playing)done()});
- let seen=false;try{seen=sessionStorage.getItem('es-intro-v2')==='1'}catch{}
- if(!seen&&!reduced.matches&&!navigator.connection?.saveData)start();
+ const host=$('#cinematic-stage'),controls=$('.intro-controls'),replay=$('#replay-intro'),content=$('.hero-content'),sound=$('#intro-sound');
+ let cinema=null,playing=false,soundOn=false,loading=null,timeout;
+ const reveal=()=>{document.body.classList.add('intro-reveal');content.inert=false};
+ const done=()=>{clearTimeout(timeout);playing=false;soundOn=false;document.body.classList.remove('intro-playing','intro-reveal');content.inert=false;controls.hidden=true;replay.hidden=false;try{sessionStorage.setItem('es-3d-intro-v1','1')}catch{}if(controls.contains(document.activeElement))replay.focus({preventScroll:true})};
+ const load=()=>loading||(loading=import('/cinematic.js').then(async m=>{cinema=await m.createCinematic(host,{onReveal:reveal,onFinish:done});document.body.classList.add('rendered-ready');return cinema}).catch(()=>{replay.textContent='Animation unavailable';replay.disabled=true;done();return null}));
+ const start=async()=>{if(playing)return;playing=true;replay.hidden=true;const scene=await load();if(!scene||!playing||document.hidden){playing=false;return}soundOn=false;sound.textContent='Sound Off';sound.setAttribute('aria-pressed','false');controls.hidden=false;content.inert=true;document.body.classList.remove('intro-reveal');document.body.classList.add('intro-playing');scene.play();timeout=setTimeout(()=>{scene.skip();done()},12000)};
+ $('#skip-intro').addEventListener('click',()=>{cinema?.skip();done()});replay.hidden=false;replay.textContent='Replay the Animation';replay.addEventListener('click',start);
+ sound.addEventListener('click',()=>{soundOn=!soundOn;cinema?.setSound(soundOn);sound.textContent=soundOn?'Sound On':'Sound Off';sound.setAttribute('aria-pressed',String(soundOn))});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing){cinema?.skip();done()}});
+ if('IntersectionObserver'in window)new IntersectionObserver(es=>{if(playing&&!es[0].isIntersecting){cinema?.skip();done()}},{threshold:0}).observe($('#hero'));
+ reduced.addEventListener('change',()=>{if(reduced.matches&&playing){cinema?.skip();done()}});
+ let seen=false;try{seen=sessionStorage.getItem('es-3d-intro-v1')==='1'}catch{}
+ if(!reduced.matches&&!navigator.connection?.saveData&&!seen)start();else if(!navigator.connection?.saveData)load();
 }
 if(matchMedia('(hover:hover) and (pointer:fine)').matches&&!reduced.matches){const cursor=$('#cursor');let frame=0;document.addEventListener('pointermove',e=>{if(frame)return;frame=requestAnimationFrame(()=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';document.body.classList.add('cursor-visible');frame=0})});document.addEventListener('pointerleave',()=>document.body.classList.remove('cursor-visible'))}
 $$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{$$('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$$('.project-card').forEach(p=>p.hidden=b.dataset.filter!=='All'&&p.dataset.category!==b.dataset.filter)}));

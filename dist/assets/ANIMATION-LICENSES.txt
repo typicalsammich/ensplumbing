@@ -1,0 +1,11 @@
+Animation runtime: Three.js r180, MIT license. See /vendor/THREE-LICENSE.txt.
+Vehicle: Generic high-roof cargo panel van by Innerscene, original CC0 model.
+Source: https://www.innerscene.com/tools/library/3d-parts/generic-high-roof-cargo-panel-van-cfef014e
+Adaptation: optimized mesh geometry, adjusted scale/orientation and PBR materials, wheel-pivot animation. No claim of manufacturer CAD accuracy or actual company vehicle branding.
+Pavement: Asphalt 02, Rob Tuytel / Poly Haven, CC0.
+Source: https://polyhaven.com/a/asphalt_02
+License: https://polyhaven.com/license
+Adaptation: resized/compressed color, OpenGL normal, and roughness maps; wet clearcoat shading.
+Other scene geometry, camera and water-drop animation: original project code.
+Audio: locally synthesized rain and drip cues.
+No live-action video files or paid APIs are required by the entrance.

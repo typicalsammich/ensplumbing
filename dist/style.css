@@ -64,3 +64,4 @@
 .section:not(.light) details p{color:var(--muted)}
 @media(max-width:900px){#main-nav{max-height:calc(100dvh - 105px);overflow-y:auto}}
 @media(max-width:350px){.hero h1{font-size:57px}.contact-grid h1{font-size:59px}.contact-number{font-size:38px}.page-hero h1{font-size:53px}.family-header>span{font-size:10px}}
+.cinematic-stage{position:absolute;inset:0;opacity:0;transition:opacity .5s;overflow:hidden}.cinematic-stage canvas{display:block;width:100%;height:100%}.rendered-ready .cinematic-stage{opacity:1}.cinematic-cut{position:absolute;inset:0;background:#07121b;pointer-events:none;opacity:0}.rendered-ready #cinematic-poster{opacity:0}#cinematic-poster{transition:opacity .4s}

@@ -1,4 +1,10 @@
 import fs from 'node:fs';import path from 'node:path';
 const routes=JSON.parse(fs.readFileSync('routes.json','utf8'));let errors=[];let titles=new Set;let descriptions=new Set;
 for(const r of routes){const file=r==='/'?'dist/index.html':`dist${r}index.html`;const h=fs.readFileSync(file,'utf8');const title=h.match(/<title>(.*?)<\/title>/)?.[1];const d=h.match(/name="description" content="([^"]*)"/)?.[1];if(!title||titles.has(title))errors.push(`Duplicate/missing title ${r}`);titles.add(title);if(!d||descriptions.has(d))errors.push(`Duplicate/missing description ${r}`);descriptions.add(d);if((h.match(/<h1[ >]/g)||[]).length!==1)errors.push(`H1 count ${r}`);for(const m of h.matchAll(/(?:href|src)="(\/[^"?#]*)(?:[?#][^"]*)?"/g)){let target='dist'+m[1];if(m[1].endsWith('/'))target+='index.html';if(!fs.existsSync(target))errors.push(`Broken reference ${r}: ${m[1]}`)}for(const s of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)){try{JSON.parse(s[1])}catch{errors.push(`Invalid JSON-LD ${r}`)}}if(/[↗→➜]/.test(h))errors.push(`Arrow glyph ${r}`);}
-if(errors.length){console.error(errors.join('\n'));process.exit(1)}console.log(`PASS: ${routes.length} pages; unique titles/descriptions, one H1 each, local links/assets, structured data, no decorative arrows.`);
+const hosting=JSON.parse(fs.readFileSync('vercel.json','utf8'));
+if(hosting.outputDirectory!=='dist'||!fs.existsSync(path.join(hosting.outputDirectory,'index.html')))errors.push('Vercel output directory does not contain the built website.');
+if(/<video[ >]/i.test(fs.readFileSync('dist/index.html','utf8')))errors.push('Homepage must use rendered animation, not video playback.');
+for(const file of ['cinematic.js',...fs.readdirSync('dist/vendor').filter(f=>f.endsWith('.js')).map(f=>'vendor/'+f)]){
+ const src=fs.readFileSync('dist/'+file,'utf8');for(const m of src.matchAll(/from ['"](.{1,2}\/[^'"]+)['"]/g))if(!fs.existsSync(path.resolve('dist',path.dirname(file),m[1])))errors.push(`Missing module dependency ${file}: ${m[1]}`);
+}
+if(errors.length){console.error(errors.join('\n'));process.exit(1)}console.log(`PASS: ${routes.length} pages; unique metadata, headings, local links/assets, structured data, Vercel output, 3D module dependencies and no video playback.`);
