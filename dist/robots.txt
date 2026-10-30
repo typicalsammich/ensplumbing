@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://es-quality-plumbing-sandiego.typical-sammich.chatgpt.site/sitemap.xml
